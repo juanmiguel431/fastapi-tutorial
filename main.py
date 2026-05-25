@@ -35,12 +35,16 @@ def about() -> str:
     return 'An exceptional company'
 
 @app.get('/bands')
-def get_bands(genre: Genre | None = None) -> list[Band]:
-    if  genre:
-        bands = [b for b in BANDS if b.genre.lower() == genre.value]
-        return bands
+def get_bands(genre: Genre | None = None, has_albums: bool | None = None) -> list[Band]:
+    bands = BANDS
 
-    return BANDS
+    if  genre:
+        bands = [b for b in bands if b.genre.lower() == genre.value]
+
+    if has_albums is not None:
+        bands = [b for b in bands if bool(b.albums) == has_albums]
+
+    return bands
 
 
 @app.get('/bands/{band_id}', response_model=Band)
