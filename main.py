@@ -50,3 +50,8 @@ def get_band(band_id: int) -> Band:
 
     return band
 
+@app.get('/bands/genre/{genre}', response_model=list[Band])
+def get_band(genre: str) -> list[Band]:
+    bands = [b for b in BANDS if b.genre.lower() == genre.lower()]
+    return bands
+
