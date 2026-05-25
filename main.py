@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -41,8 +41,12 @@ def get_bands() -> list[Band]:
     return BANDS
 
 
-@app.get('/bands/{band_id}', response_model=Band | None)
-def get_band(band_id: int) -> Band | None:
+@app.get('/bands/{band_id}', response_model=Band)
+def get_band(band_id: int) -> Band:
     band = next((b for b in BANDS if b.id == band_id), None)
+
+    if  band is None:
+        raise HTTPException(status_code=404, detail='Band not found')
+
     return band
 
