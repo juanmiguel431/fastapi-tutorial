@@ -1,27 +1,19 @@
+from datetime import date
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from enum import Enum
+from schema import Band, Genre, Album
 
-class Genre(Enum):
-    Rock = 'rock'
-    Electronic = 'electronic'
-    Showgaze = 'showgaze'
-    HipHop = 'hip-hop'
 app = FastAPI()
-
-
-class Band(BaseModel):
-    id: int
-    name: str
-    genre: str
 
 
 BANDS: list[Band] = [
     Band(id= 1, name='The Kings', genre='Rock'),
     Band(id= 2, name='The Rolling Stones', genre='Rock'),
     Band(id= 3, name='The Beatles', genre='Rock'),
-    Band(id= 4, name='Pink Floyd', genre='Rock'),
+    Band(id= 4, name='Pink Floyd', genre='Rock', albums=[
+        Album(title='Abbey Road', release_date=date(year=1969, month=7, day=21)),
+    ]),
     Band(id= 5, name='The Who', genre='Rock'),
     Band(id= 6, name='Aphex Twin', genre='Electronic'),
     Band(id= 7, name='Slowdive', genre='Showgaze'),
