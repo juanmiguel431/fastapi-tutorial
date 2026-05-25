@@ -1,7 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from enum import Enum
 
+class Genre(Enum):
+    Rock = 'rock'
+    Electronic = 'electronic'
+    Showgaze = 'showgaze'
+    HipHop = 'hip-hop'
 app = FastAPI()
 
 
@@ -51,7 +57,7 @@ def get_band(band_id: int) -> Band:
     return band
 
 @app.get('/bands/genre/{genre}', response_model=list[Band])
-def get_band(genre: str) -> list[Band]:
-    bands = [b for b in BANDS if b.genre.lower() == genre.lower()]
+def get_band(genre: Genre) -> list[Band]:
+    bands = [b for b in BANDS if b.genre.lower() == genre.value]
     return bands
 
