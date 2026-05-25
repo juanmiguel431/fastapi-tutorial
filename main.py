@@ -1,25 +1,25 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from typing import TypedDict
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
-class Band(TypedDict):
+class Band(BaseModel):
     id: int
     name: str
     genre: str
 
 
 BANDS: list[Band] = [
-    {'id': 1, 'name': 'The Kings', 'genre': 'Rock'},
-    {'id': 2, 'name': 'The Rolling Stones', 'genre': 'Rock'},
-    {'id': 3, 'name': 'The Beatles', 'genre': 'Rock'},
-    {'id': 4, 'name': 'Pink Floyd', 'genre': 'Rock'},
-    {'id': 5, 'name': 'The Who', 'genre': 'Rock'},
-    {'id': 6, 'name': 'Aphex Twin', 'genre': 'Electronic'},
-    {'id': 7, 'name': 'Slowdive', 'genre': 'Showgaze'},
-    {'id': 8, 'name': 'Wu-Tang Clan', 'genre': 'Hip-Hop'},
+    Band(id= 1, name='The Kings', genre='Rock'),
+    Band(id= 2, name='The Rolling Stones', genre='Rock'),
+    Band(id= 3, name='The Beatles', genre='Rock'),
+    Band(id= 4, name='Pink Floyd', genre='Rock'),
+    Band(id= 5, name='The Who', genre='Rock'),
+    Band(id= 6, name='Aphex Twin', genre='Electronic'),
+    Band(id= 7, name='Slowdive', genre='Showgaze'),
+    Band(id= 8, name='Wu-Tang Clan', genre='Hip-Hop'),
 ]
 
 @app.get('/')
@@ -41,8 +41,8 @@ def get_bands() -> list[Band]:
     return BANDS
 
 
-@app.get('/bands/{band_id}')
+@app.get('/bands/{band_id}', response_model=Band | None)
 def get_band(band_id: int) -> Band | None:
-    band = next((b for b in BANDS if b['id'] == band_id), None)
+    band = next((b for b in BANDS if b.id == band_id), None)
     return band
 
