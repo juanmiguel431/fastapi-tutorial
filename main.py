@@ -35,7 +35,11 @@ def about() -> str:
     return 'An exceptional company'
 
 @app.get('/bands')
-def get_bands() -> list[Band]:
+def get_bands(genre: Genre | None = None) -> list[Band]:
+    if  genre:
+        bands = [b for b in BANDS if b.genre.lower() == genre.value]
+        return bands
+
     return BANDS
 
 
