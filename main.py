@@ -1,24 +1,24 @@
-from datetime import date
-
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from schema import Band, Genre, Album
+from schema import Band, Genre
 
 app = FastAPI()
 
 
-BANDS: list[Band] = [
-    Band(id= 1, name='The Kings', genre='Rock'),
-    Band(id= 2, name='The Rolling Stones', genre='Rock'),
-    Band(id= 3, name='The Beatles', genre='Rock'),
-    Band(id= 4, name='Pink Floyd', genre='Rock', albums=[
-        Album(title='Abbey Road', release_date=date(year=1969, month=7, day=21)),
-    ]),
-    Band(id= 5, name='The Who', genre='Rock'),
-    Band(id= 6, name='Aphex Twin', genre='Electronic'),
-    Band(id= 7, name='Slowdive', genre='Showgaze'),
-    Band(id= 8, name='Wu-Tang Clan', genre='Hip-Hop'),
+RAW_BANDS: list = [
+    {'id': 1, 'name': 'The Kings', 'genre': 'Rock'},
+    {'id': 2, 'name': 'The Rolling Stones', 'genre': 'Rock'},
+    {'id': 3, 'name': 'The Beatles', 'genre': 'Rock'},
+    {'id': 4, 'name': 'Pink Floyd', 'genre': 'Rock', 'albums': [
+        {'title': 'Abbey Road', 'release_date': '1969-07-21'},
+    ]},
+    {'id': 5, 'name': 'The Who', 'genre': 'Rock'},
+    {'id': 6, 'name': 'Aphex Twin', 'genre': 'Electronic'},
+    {'id': 7, 'name': 'Slowdive', 'genre': 'Showgaze'},
+    {'id': 8, 'name': 'Wu-Tang Clan', 'genre': 'Hip-Hop'},
 ]
+
+BANDS: list[Band] = [Band(**b) for b in RAW_BANDS]
 
 @app.get('/')
 def index() -> dict[str, str]:
