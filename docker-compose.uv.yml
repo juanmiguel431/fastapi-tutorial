@@ -1,0 +1,9 @@
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.uv
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./database:/app/database
