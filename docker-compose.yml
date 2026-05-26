@@ -1,0 +1,9 @@
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./db.sqlite:/app/db.sqlite
