@@ -1,0 +1,16 @@
+
+GET http://127.0.0.1:8000/bands?genre=Electronic
+
+###
+
+GET http://127.0.0.1:8000/bands
+
+###
+
+POST http://127.0.0.1:8000/bands
+Content-Type: application/json
+
+{
+    "name": "Alejandro Sanz",
+    "genre": "Electronic"
+}
