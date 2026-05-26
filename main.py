@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from typing import Annotated
+
+from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.responses import HTMLResponse
 from schema import Band, Genre, BandUpsertDto
 
@@ -26,7 +28,7 @@ def index() -> dict[str, str]:
 
 
 @app.get('/items/{item_id}')
-def get_item(item_id: int, q: str | None = None):
+def get_item(item_id: int, q: Annotated[str | None, Query(max_length=5)] = None):
     return {'item_id': item_id, 'q': q}
 
 
@@ -35,7 +37,11 @@ def about() -> str:
     return 'An exceptional company'
 
 @app.get('/bands')
-def get_bands(genre: Genre | None = None, has_albums: bool | None = None) -> list[Band]:
+def get_bands(
+        genre: Genre | None = None,
+        has_albums: bool | None = None,
+        q: Annotated[str | None, Query(min_length=4, max_length=10)] = None,
+) -> list[Band]:
     bands = BANDS
 
     if  genre:
@@ -44,11 +50,14 @@ def get_bands(genre: Genre | None = None, has_albums: bool | None = None) -> lis
     if has_albums is not None:
         bands = [b for b in bands if bool(b.albums) == has_albums]
 
+    if q:
+        bands = [b for b in bands if q.lower() in b.name.lower()]
+
     return bands
 
 
 @app.get('/bands/{band_id}', response_model=Band)
-def get_band(band_id: int) -> Band:
+def get_band(band_id: Annotated[int, Path(title='The band id')]) -> Band:
     band = next((b for b in BANDS if b.id == band_id), None)
 
     if  band is None:
@@ -57,7 +66,7 @@ def get_band(band_id: int) -> Band:
     return band
 
 @app.get('/bands/genre/{genre}', response_model=list[Band])
-def get_band(genre: Genre) -> list[Band]:
+def get_band_by_genre(genre: Genre) -> list[Band]:
     bands = [b for b in BANDS if b.genre == genre]
     return bands
 

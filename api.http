@@ -7,6 +7,10 @@ GET http://127.0.0.1:8000/bands
 
 ###
 
+GET http://127.0.0.1:8000/bands?q=Slo
+
+###
+
 POST http://127.0.0.1:8000/bands
 Content-Type: application/json
 
@@ -14,3 +18,7 @@ Content-Type: application/json
     "name": "Alejandro Sanz",
     "genre": "Electronic"
 }
+
+###
+
+GET http://127.0.0.1:8000/items/25?q=juanmi
