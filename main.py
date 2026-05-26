@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from sqlalchemy import func
 from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.responses import HTMLResponse
 from models import Band, Genre, BandUpsertDto, BandDto, Album
@@ -40,16 +40,22 @@ def get_bands(
         has_albums: bool | None = None,
         q: Annotated[str | None, Query(min_length=4, max_length=10)] = None,
 ) -> list[BandDto]:
-    bands = session.exec(select(Band)).all()
+    statement = select(Band)
 
-    if  genre:
-        bands = [b for b in bands if b.genre == genre]
+    if genre:
+        statement = statement.where(Band.genre == genre)
 
-    if has_albums is not None:
-        bands = [b for b in bands if bool(b.albums) == has_albums]
+    if has_albums:
+        statement = statement.where(Band.albums.any())
+    elif has_albums is False:
+        statement = statement.where(~Band.albums.any())
 
     if q:
-        bands = [b for b in bands if q.lower() in b.name.lower()]
+        statement = statement.where(
+            func.lower(Band.name).contains(q.lower())
+        )
+
+    bands = session.exec(statement).all()
 
     dto_bands = [BandDto.from_entity(b) for b in bands]
 
@@ -75,10 +81,10 @@ def get_band_by_genre(
         session: SessionDep,
         genre: Genre,
 ) -> list[BandDto]:
-    bands = session.exec(select(Band)).all()
-    filtered_bands = [b for b in bands if b.genre == genre]
+    statement = select(Band).where(Band.genre == genre)
+    bands = session.exec(statement).all()
 
-    dto_bands = [BandDto.from_entity(b) for b in filtered_bands]
+    dto_bands = [BandDto.from_entity(b) for b in bands]
     return dto_bands
 
 
