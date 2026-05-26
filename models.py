@@ -6,10 +6,10 @@ from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
 
 class Genre(Enum):
-    Rock = 'Rock'
-    Electronic = 'Electronic'
-    Showgaze = 'Showgaze'
-    HipHop = 'Hip-Hop'
+    ROCK = 'Rock'
+    ELECTRONIC = 'Electronic'
+    SHOWGAZE = 'Showgaze'
+    HIP_HOP = 'Hip-Hop'
 
 
 class Album(SQLModel, table=True):

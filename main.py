@@ -3,20 +3,11 @@ from sqlalchemy import func
 from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.responses import HTMLResponse
 from models import Band, Genre, BandUpsertDto, BandDto, Album
-from contextlib import asynccontextmanager
-from db import create_db_and_tables, SessionDep
+from db import SessionDep
 from sqlmodel import select
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Load
-    create_db_and_tables()
-
-    yield
-    # Clean up
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 
 @app.get('/')

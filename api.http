@@ -1,5 +1,5 @@
 
-GET http://127.0.0.1:8000/bands?genre=ROCK
+GET http://127.0.0.1:8000/bands?genre=Hip-Hop
 
 ###
 
@@ -25,8 +25,8 @@ POST http://127.0.0.1:8000/bands
 Content-Type: application/json
 
 {
-    "name": "Carmen",
-    "genre": "Electronic"
+    "name": "Lucas",
+    "genre": "hip-hop"
 }
 
 ###
