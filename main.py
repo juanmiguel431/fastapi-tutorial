@@ -2,9 +2,20 @@ from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.responses import HTMLResponse
-from schema import Band, Genre, BandUpsertDto
+from models import Band, Genre, BandUpsertDto, BandDto
+from contextlib import asynccontextmanager
+from db import create_db_and_tables
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load
+    create_db_and_tables()
+
+    yield
+    # Clean up
+
+app = FastAPI(lifespan=lifespan)
 
 
 RAW_BANDS: list = [
@@ -20,7 +31,7 @@ RAW_BANDS: list = [
     {'id': 8, 'name': 'Wu-Tang Clan', 'genre': 'Hip-Hop'},
 ]
 
-BANDS: list[Band] = [Band(**b) for b in RAW_BANDS]
+BANDS: list[BandDto] = [BandDto(**b) for b in RAW_BANDS]
 
 @app.get('/')
 def index() -> dict[str, str]:
@@ -41,7 +52,7 @@ def get_bands(
         genre: Genre | None = None,
         has_albums: bool | None = None,
         q: Annotated[str | None, Query(min_length=4, max_length=10)] = None,
-) -> list[Band]:
+) -> list[BandDto]:
     bands = BANDS
 
     if  genre:
@@ -56,8 +67,8 @@ def get_bands(
     return bands
 
 
-@app.get('/bands/{band_id}', response_model=Band)
-def get_band(band_id: Annotated[int, Path(title='The band id')]) -> Band:
+@app.get('/bands/{band_id}', response_model=BandDto)
+def get_band(band_id: Annotated[int, Path(title='The band id')]) -> BandDto:
     band = next((b for b in BANDS if b.id == band_id), None)
 
     if  band is None:
@@ -65,16 +76,16 @@ def get_band(band_id: Annotated[int, Path(title='The band id')]) -> Band:
 
     return band
 
-@app.get('/bands/genre/{genre}', response_model=list[Band])
-def get_band_by_genre(genre: Genre) -> list[Band]:
+@app.get('/bands/genre/{genre}', response_model=list[BandDto])
+def get_band_by_genre(genre: Genre) -> list[BandDto]:
     bands = [b for b in BANDS if b.genre == genre]
     return bands
 
 
-@app.post('/bands', response_model=Band)
-def create_band(payload: BandUpsertDto) -> Band:
+@app.post('/bands', response_model=BandDto)
+def create_band(payload: BandUpsertDto) -> BandDto:
     band_id = BANDS[-1].id + 1
-    band = Band(id=band_id, **payload.model_dump())
+    band = BandDto(id=band_id, **payload.model_dump())
 
     BANDS.append(band)
     RAW_BANDS.append(band.model_dump())
