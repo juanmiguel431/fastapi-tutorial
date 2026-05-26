@@ -25,12 +25,16 @@ class Band(SQLModel, table=True):
     albums: list[Album] = Relationship(back_populates='band')
 
 
-class AlbumUpsertDto(BaseModel):
+class BaseDto(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AlbumUpsertDto(BaseDto):
     title: str
     release_date: date
 
 
-class BandUpsertDto(BaseModel):
+class BandUpsertDto(BaseDto):
     name: str
     genre: Genre
     albums: list[AlbumUpsertDto] = []
@@ -48,16 +52,14 @@ class BandUpsertDto(BaseModel):
         return value
 
 
-class AlbumDto(BaseModel):
+class AlbumDto(BaseDto):
+    id: int
     title: str
     release_date: date
 
-    model_config = ConfigDict(from_attributes=True)
 
-class BandDto(BaseModel):
+class BandDto(BaseDto):
     id: int
     name: str
     genre: Genre
     albums: list[AlbumDto] = []
-
-    model_config = ConfigDict(from_attributes=True)
