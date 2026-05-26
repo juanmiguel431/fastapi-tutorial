@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -52,9 +52,12 @@ class AlbumDto(BaseModel):
     title: str
     release_date: date
 
+    model_config = ConfigDict(from_attributes=True)
 
 class BandDto(BaseModel):
     id: int
     name: str
     genre: Genre
     albums: list[AlbumDto] = []
+
+    model_config = ConfigDict(from_attributes=True)

@@ -5,9 +5,14 @@ GET http://127.0.0.1:8000/bands?genre=Electronic
 
 GET http://127.0.0.1:8000/bands
 
+
 ###
 
-GET http://127.0.0.1:8000/bands?q=Slo
+GET http://127.0.0.1:8000/bands/1
+
+###
+
+GET http://127.0.0.1:8000/bands?q=Slow
 
 ###
 
@@ -15,8 +20,28 @@ POST http://127.0.0.1:8000/bands
 Content-Type: application/json
 
 {
-    "name": "Alejandro Sanz",
+    "name": "Carmen",
     "genre": "Electronic"
+}
+
+###
+
+POST http://127.0.0.1:8000/bands
+Content-Type: application/json
+
+{
+    "name": "Boards of Canada",
+    "genre": "Rock",
+    "albums": [
+      {
+        "title": "Tomorrow's Harvest",
+        "release_date": "2013-01-01"
+      },
+      {
+        "title": "Music Has The Right To Children",
+        "release_date": "1998-01-01"
+      }
+    ]
 }
 
 ###
