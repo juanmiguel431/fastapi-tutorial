@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import date
 
 
@@ -25,3 +25,15 @@ class BandUpsertDto(BaseModel):
     name: str
     genre: Genre
     albums: list[Album] = []
+
+    @field_validator('genre', mode='before')
+    @classmethod
+    def normalize_genre(cls, value):
+        if isinstance(value, str):
+            normalized = value.lower()
+
+            for genre in Genre:
+                if genre.value.lower() == normalized:
+                    return genre
+
+        return value
