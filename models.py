@@ -25,6 +25,7 @@ class Band(SQLModel, table=True):
     name: str
     genre: Genre
     albums: list[Album] = Relationship(back_populates='band')
+    date_formed: date | None
 
 
 class BaseDto(BaseModel):
