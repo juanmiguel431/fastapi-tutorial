@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from schema import Band, Genre
+from schema import Band, Genre, BandUpsertDto
 
 app = FastAPI()
 
@@ -39,7 +39,7 @@ def get_bands(genre: Genre | None = None, has_albums: bool | None = None) -> lis
     bands = BANDS
 
     if  genre:
-        bands = [b for b in bands if b.genre.lower() == genre.value]
+        bands = [b for b in bands if b.genre == genre]
 
     if has_albums is not None:
         bands = [b for b in bands if bool(b.albums) == has_albums]
@@ -58,6 +58,16 @@ def get_band(band_id: int) -> Band:
 
 @app.get('/bands/genre/{genre}', response_model=list[Band])
 def get_band(genre: Genre) -> list[Band]:
-    bands = [b for b in BANDS if b.genre.lower() == genre.value]
+    bands = [b for b in BANDS if b.genre == genre]
     return bands
 
+
+@app.post('/bands', response_model=Band)
+def create_band(payload: BandUpsertDto) -> Band:
+    band_id = BANDS[-1].id + 1
+    band = Band(id=band_id, **payload.model_dump())
+
+    BANDS.append(band)
+    RAW_BANDS.append(band.model_dump())
+
+    return band

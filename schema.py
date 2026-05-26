@@ -4,10 +4,10 @@ from datetime import date
 
 
 class Genre(Enum):
-    Rock = 'rock'
-    Electronic = 'electronic'
-    Showgaze = 'showgaze'
-    HipHop = 'hip-hop'
+    Rock = 'Rock'
+    Electronic = 'Electronic'
+    Showgaze = 'Showgaze'
+    HipHop = 'Hip-Hop'
 
 
 class Album(BaseModel):
@@ -18,5 +18,10 @@ class Album(BaseModel):
 class Band(BaseModel):
     id: int
     name: str
-    genre: str
+    genre: Genre
+    albums: list[Album] = []
+
+class BandUpsertDto(BaseModel):
+    name: str
+    genre: Genre
     albums: list[Album] = []
