@@ -4,6 +4,6 @@ services:
     build:
       dockerfile: Dockerfile
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
-      - ./db.sqlite:/app/db.sqlite
+      - ./database:/app/database
