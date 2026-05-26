@@ -51,7 +51,7 @@ def get_bands(
     if q:
         bands = [b for b in bands if q.lower() in b.name.lower()]
 
-    dto_bands = [BandDto.model_validate(b) for b in bands]
+    dto_bands = [BandDto.from_entity(b) for b in bands]
 
     return dto_bands
 
@@ -66,7 +66,7 @@ def get_band(
     if  band is None:
         raise HTTPException(status_code=404, detail='Band not found')
 
-    dto = BandDto.model_validate(band)
+    dto = BandDto.from_entity(band)
     return dto
 
 
@@ -78,7 +78,7 @@ def get_band_by_genre(
     bands = session.exec(select(Band)).all()
     filtered_bands = [b for b in bands if b.genre == genre]
 
-    dto_bands = [BandDto.model_validate(b) for b in filtered_bands]
+    dto_bands = [BandDto.from_entity(b) for b in filtered_bands]
     return dto_bands
 
 
@@ -98,5 +98,5 @@ def create_band(
     session.commit()
     session.refresh(band)
 
-    dto = BandDto.model_validate(band)
+    dto = BandDto.from_entity(band)
     return dto

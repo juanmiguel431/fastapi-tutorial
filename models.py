@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import Any, Self
+
 from pydantic import BaseModel, field_validator, ConfigDict
 from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
@@ -28,6 +30,9 @@ class Band(SQLModel, table=True):
 class BaseDto(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    @classmethod
+    def from_entity(cls, entity: Any) -> Self:
+        return cls.model_validate(entity)
 
 class AlbumUpsertDto(BaseDto):
     title: str
